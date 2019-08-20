@@ -1,0 +1,21 @@
+*** Settings ***
+Resource          ../流程层.txt
+Library           HttpLibrary.HTTP
+
+*** Test Cases ***
+shujuqudong_case
+    Open Excel    C:\\Users\\chen\\Desktop\\shiyan.xls
+    ${row_num}    Get Row Count    Sheet1
+    : FOR    ${i}    IN RANGE    1    ${row_num}
+    \    ${row_values}    danhang_read_excel    Sheet1    ${i}
+    \    ${url}    Get From Dictionary    ${row_values}    url
+    \    ${path}    Get From Dictionary    ${row_values}    path
+    \    ${query}    Get From Dictionary    ${row_values}    query
+    \    ${path_query}    Set Variable    ${path}?${query}
+    \    ${method}    Get From Dictionary    ${row_values}    method
+    \    ${run}    Get From Dictionary    ${row_values}    run
+    \    ${expect_result}    Get From Dictionary    ${row_values}    expect_result
+    \    ${actual_result}    ${result_msg}    Run Keyword And Ignore Error    qingqiu    ${url}    ${path_query}
+    \    ...    ${method}
+    \    Should Be Equal    ${actual_result}    ${expect_result}
+    #post请求的请求体没加

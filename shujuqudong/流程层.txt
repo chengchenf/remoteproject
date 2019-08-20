@@ -1,0 +1,32 @@
+*** Settings ***
+Library           ExcelLibrary
+Library           Collections
+Library           HttpLibrary.HTTP
+
+*** Keywords ***
+danhang_read_excel
+    [Arguments]    ${sheet}    ${row_id}
+    Open Excel    C:\\Users\\chen\\Desktop\\shiyan.xls
+    ${row}    Get Row Values    Sheet1    ${row_id}
+    ${case_id}    Set Variable    ${row[0][1]}
+    ${case_name}    Set Variable    ${row[1][1]}
+    ${run}    Set Variable    ${row[2][1]}
+    ${url}    Set Variable    ${row[3][1]}
+    ${path}    Set Variable    ${row[4][1]}
+    ${query}    Set Variable    ${row[5][1]}
+    ${method}    Set Variable    ${row[6][1]}
+    ${headers}    Set Variable    ${row[7][1]}
+    ${body}    Set Variable    ${row[8][1]}
+    ${expect_result}    Set Variable    ${row[9][1]}
+    ${row_values}    Create Dictionary    case_id=${case_id}    case_name=${case_name}    run=${run}    url=${url}    path=${path}
+    ...    query=${query}    method=${method}    headers=${headers}    body=${body}    expect_result=${expect_result}
+    [Return]    ${row_values}
+
+qingqiu
+    [Arguments]    ${url}    ${path_query}    ${method}
+    Create Http Context    ${url}    http
+    Run Keyword If    '${method}'=='get'    GET    ${path_query}
+    Run Keyword If    '${method}'=='post'    POST    ${path_query}
+    ${status_code}    Get Response Status
+    ${response_body}    Get Response body
+    [Return]    ${status_code}    ${response_body}
